@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUEGO DEL NUMERO MAGICO</title>
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Amaranth&family=Carter+One&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div id="reloj" class="reloj">00 : 00 : 00</div>
+
+    <h1>JUEGO NUMERO MAGICO</h1>
+
+    <p>Hemos seleccionado un número aleatorio entre 1 y 1000. Vea si puede adivinarlo en 10 turnos o menos. Le diremos pistas si su numero fue mayor o menor. </p>
+
+    <div class="formulario">
+      <label for="numAdivinar">Ingrese el numero </label><input type="text" id="adivCampo" class="adivCampo">
+      <input type="submit" value="Enviar" class="numAdivinar">
+    </div>
+
+    <div class="resultParas">
+      <p class="guesses"></p>
+      <p class="lastResult"></p>
+      <p class="lowOrHi"></p>
+    </div>
+
+
+    
+
+    <!--CODIGO RELOJ-->
+
+    <script>
+      function actual() {
+         fecha=new Date(); 
+         hora=fecha.getHours(); 
+         minuto=fecha.getMinutes(); 
+         segundo=fecha.getSeconds(); 
+         if (hora<10) { 
+            hora="0"+hora;
+            }
+         if (minuto<10) { 
+            minuto="0"+minuto;
+            }
+         if (segundo<10) { 
+            segundo="0"+segundo;
+            }
+         
+         mireloj = hora+" : "+minuto+" : "+segundo;	
+				 return mireloj; 
+         }
+      function actualizar() { 
+            mihora=actual(); 
+            mireloj=document.getElementById("reloj"); 
+            mireloj.innerHTML=mihora; 
+          }
+      setInterval(actualizar,1000); 
+    </script>
+
+    <!--Codigo javascript,Generando numero magico-->
+
+    <script>
+      let randomNumber = Math.floor(Math.random() * 1000) + 1;
+      const guesses = document.querySelector('.guesses');
+      const lastResult = document.querySelector('.lastResult');
+      const lowOrHi = document.querySelector('.lowOrHi');
+      const numAdivinar = document.querySelector('.numAdivinar');
+      const adivCampo = document.querySelector('.adivCampo');
+      let guessCount = 1;
+      let resetButton;
+
+      function checkGuess() {
+        let userGuess = Number(adivCampo.value);
+        if (guessCount === 1) {
+          guesses.textContent = 'intentos anteriores: ';
+        }
+
+        guesses.textContent += userGuess + ' ';
+
+        if (userGuess === randomNumber) {
+          lastResult.textContent = '¡Felicidades! Lo Lograte, el numero magico era '+ randomNumber;
+          lastResult.style.backgroundColor = 'green';
+          lowOrHi.textContent = '';
+          setGameOver();
+        } else if (guessCount === 10) {
+          lastResult.textContent = '!!!GAME OVER!!! El numero magico era '+ randomNumber;
+          lowOrHi.textContent = '';
+          setGameOver();
+        } else {
+          lastResult.textContent = 'Equivocado';
+          lastResult.style.backgroundColor = 'red';
+          if(userGuess < randomNumber) {
+
+            lowOrHi.textContent = 'Es mayor' ;
+          } else if(userGuess > randomNumber) {
+            lowOrHi.textContent = 'Es menor';
+          }
+        }
+
+        guessCount++;
+        adivCampo.value = '';
+        adivCampo.focus();
+      }
+
+      numAdivinar.addEventListener('click', checkGuess);
+
+      function setGameOver() {
+        adivCampo.disabled = true;
+        numAdivinar.disabled = true;
+        resetButton = document.createElement('button');
+        resetButton.textContent = 'Iniciar juego';
+        document.body.appendChild(resetButton);
+        resetButton.addEventListener('click', resetGame);
+      }
+
+      function resetGame() {
+        guessCount = 1;
+        const resetParas = document.querySelectorAll('.resultParas p');
+        for(let i = 0 ; i < resetParas.length ; i++) {
+          resetParas[i].textContent = '';
+        }
+
+        resetButton.parentNode.removeChild(resetButton);
+        adivCampo.disabled = false;
+        numAdivinar.disabled = false;
+        adivCampo.value = '';
+        adivCampo.focus();
+        lastResult.style.backgroundColor = 'white';
+        randomNumber = Math.floor(Math.random() * 1000) + 1;
+      }
+
+
+    </script>
+
+  </body>
+</html>
